@@ -31,7 +31,7 @@ jobs:
         run: |
           gcloud run deploy tharara-cms-test \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest \
-            --region us-central1 \
+            --region asia-south1 \
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" \
