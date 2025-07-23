@@ -16,6 +16,9 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      - name: Check GitHub Context
+        run: |
+          echo "GITHUB_CONTEXT: ${{ toJson(github) }}"
       - name: Debug Secrets
         run: |
           echo "GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
