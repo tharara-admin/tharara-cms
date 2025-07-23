@@ -2,13 +2,12 @@ name: Deploy Tharara CMS
 on:
   push:
     branches:
-      - main
       - test
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -18,22 +17,28 @@ jobs:
       - name: Build
         run: npm run build
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Build and Push Docker Image
+        run: |
+          gcloud auth configure-docker
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy tharara-cms-${{ github.ref_name == 'main' && 'prod' || 'test' }} \
+          gcloud run deploy tharara-cms-test \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest \
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars "DATABASE_URL=${{ github.ref_name == 'main' && secrets.PROD_DATABASE_URL || secrets.TEST_DATABASE_URL }}" \
-            --set-env-vars "GCS_BUCKET=${{ github.ref_name == 'main' && secrets.PROD_GCS_BUCKET || secrets.TEST_GCS_BUCKET }}" \
+            --set-env-vars "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" \
+            --set-env-vars "GCS_BUCKET=${{ secrets.TEST_GCS_BUCKET }}" \
+            --set-env-vars "GCS_CREDENTIALS=${{ secrets.GCP_CREDENTIALS }}" \
             --set-env-vars "APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}" \
             --set-env-vars "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" \
             --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
             --set-env-vars "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" \
-            --set-env-vars "NODE_ENV=${{ github.ref_name == 'main' && 'production' || 'test' }}"
+            --set-env-vars "NODE_ENV=test"
