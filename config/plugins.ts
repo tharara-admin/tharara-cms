@@ -16,15 +16,15 @@ export default () => ({});
 //   },
 // });
 
-// module.exports = ({ env }) => ({
-//     upload: {
-//         config: {
-//             provider: 'google-cloud-storage',
-//             providerOptions: {
-//                 bucketName: env('GCS_BUCKET'),
-//                 basePath: '',
-//                 publicFiles: true,
-//             },
-//         },
-//     },
-// });
+module.exports = ({ env }) => ({
+    upload: {
+        config: {
+            provider: '@strapi-community/strapi-provider-upload-google-cloud-storage',
+            providerOptions: {
+                bucketName: env('GCS_BUCKET'),
+                basePath: '',
+                publicFiles: true,
+            },
+        },
+    },
+});

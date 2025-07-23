@@ -1,5 +1,15 @@
 import path from 'path';
 
+// module.exports = ({ env }) => ({
+//   connection: {
+//     client: 'postgres',
+//     connection: {
+//       connectionString: env('DATABASE_URL'),
+//       ssl: { rejectUnauthorized: false },
+//     },
+//   },
+// });
+
 export default ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 

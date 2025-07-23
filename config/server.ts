@@ -6,6 +6,6 @@ export default ({ env }) => ({
   },
   url: env('NODE_ENV') === 'production' ? 'https://cms.tharara.com' : 'https://test-cms.tharara.com',
   cors: {
-    origin: ['https://tharara.com', 'https://test.tharara.com', 'https://api.tharara.com', 'https://test-api.tharara.com'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://tharara.com', 'https://test.tharara.com', 'https://api.tharara.com', 'https://test-api.tharara.com'],
   },
 });
