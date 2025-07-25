@@ -7,8 +7,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # Allow read access to repository contents
-    #   secrets: read   # Allow read access to secrets (optional, for fallback)
+      contents: read
+    #   secrets: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -22,29 +22,35 @@ jobs:
       - name: Debug Secrets
         run: |
           echo "GITHUB_CONTEXT: ${{ toJson(github) }}"
-          echo "Using hardcoded values for testing"
+          echo "GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
+          echo "TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}"
+          echo "TEST_GCS_BUCKET: ${{ secrets.TEST_GCS_BUCKET }}"
+          echo "STRAPI_APP_KEYS: ${{ secrets.STRAPI_APP_KEYS }}"
+          echo "STRAPI_API_TOKEN_SALT: ${{ secrets.STRAPI_API_TOKEN_SALT }}"
+          echo "STRAPI_ADMIN_JWT_SECRET: ${{ secrets.STRAPI_ADMIN_JWT_SECRET }}"
+          echo "STRAPI_JWT_SECRET: ${{ secrets.STRAPI_JWT_SECRET }}"
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ toJson({"type":"service_account","project_id":"tharara-project","private_key_id":"your_key_id","private_key":"your_private_key","client_email":"your_service_account@tharara-project.iam.gserviceaccount.com","client_id":"your_client_id","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/your_service_account%40tharara-project.iam.gserviceaccount.com"}) }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
       - name: Build and Push Docker Image
         run: |
           gcloud auth configure-docker
-          docker build -t gcr.io/tharara-project/tharara-cms:latest .
-          docker push gcr.io/tharara-project/tharara-cms:latest
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy tharara-cms-test \
-            --image gcr.io/tharara-project/tharara-cms:latest \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tharara-cms:latest \
             --region asia-south1 \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars "DATABASE_URL=postgres://strapi_user:UD4fb\6r"]ml$e|i@10.160.0.0:5432/tharara_cms_test" \
-            --set-env-vars "GCS_BUCKET=tharara-test-bucket" \
-            --set-env-vars "APP_KEYS=X8bgI+AKVHaGmo+qkprtdgmh+MYBMOQLlIEFD2T/0UQ=,cmiFL177mM5Je2Z5yDKJfylKOgmtFLiEMZCFXF7kLi8=" \
-            --set-env-vars "API_TOKEN_SALT=IoNOACN+8bL5dRKZPzKyEl7QWywQ+POI4jk9bEdVFsw=" \
-            --set-env-vars "ADMIN_JWT_SECRET=9XpvpvI6KqDvBlCTPF1cOvIFj+kw3EhsUrPp7mhB0ug=" \
-            --set-env-vars "JWT_SECRET=9q/7ylA9xCkohxdJ8lV7gb/hxbVM/LZ1J5R+kVoiEu4=" \
+            --set-env-vars "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" \
+            --set-env-vars "GCS_BUCKET=${{ secrets.TEST_GCS_BUCKET }}" \
+            --set-env-vars "APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}" \
+            --set-env-vars "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" \
+            --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
+            --set-env-vars "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" \
             --set-env-vars "NODE_ENV=test"
