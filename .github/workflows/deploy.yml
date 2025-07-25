@@ -29,6 +29,7 @@ jobs:
           echo "STRAPI_API_TOKEN_SALT: ${{ secrets.STRAPI_API_TOKEN_SALT }}"
           echo "STRAPI_ADMIN_JWT_SECRET: ${{ secrets.STRAPI_ADMIN_JWT_SECRET }}"
           echo "STRAPI_JWT_SECRET: ${{ secrets.STRAPI_JWT_SECRET }}"
+          echo "GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}" | wc -c
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
