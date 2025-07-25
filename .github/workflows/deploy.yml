@@ -39,7 +39,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           gcloud auth configure-docker
-          docker push -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest .
+          docker build -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest .
           docker push asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest
       - name: Deploy to Cloud Run
         run: |
