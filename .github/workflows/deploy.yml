@@ -6,6 +6,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    #   secrets: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -16,15 +19,12 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Check GitHub Context
-        run: |
-          echo "GITHUB_CONTEXT: ${{ toJson(github) }}"
       - name: Debug Secrets
         run: |
+          echo "GITHUB_CONTEXT: ${{ toJson(github) }}"
           echo "GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
           echo "TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}"
           echo "TEST_GCS_BUCKET: ${{ secrets.TEST_GCS_BUCKET }}"
-          echo "GCP_CREDENTIALS (first 50 chars): ${{ secrets.GCP_CREDENTIALS }}"
           echo "STRAPI_APP_KEYS: ${{ secrets.STRAPI_APP_KEYS }}"
           echo "STRAPI_API_TOKEN_SALT: ${{ secrets.STRAPI_API_TOKEN_SALT }}"
           echo "STRAPI_ADMIN_JWT_SECRET: ${{ secrets.STRAPI_ADMIN_JWT_SECRET }}"
