@@ -24,7 +24,6 @@ jobs:
         run: |
           echo "GITHUB_CONTEXT: ${{ toJson(github) }}"
           echo "GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
-          echo "TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}"
           echo "TEST_GCS_BUCKET: ${{ secrets.TEST_GCS_BUCKET }}"
           echo "STRAPI_APP_KEYS: ${{ secrets.STRAPI_APP_KEYS }}"
           echo "STRAPI_API_TOKEN_SALT: ${{ secrets.STRAPI_API_TOKEN_SALT }}"
