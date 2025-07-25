@@ -5,6 +5,7 @@ on:
       - test
 jobs:
   deploy:
+    environment: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
