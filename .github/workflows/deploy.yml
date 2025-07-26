@@ -59,5 +59,4 @@ jobs:
             --set-env-vars "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" \
             --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
             --set-env-vars "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" \
-            --set-env-vars "PORT=1337" \
             --set-env-vars "NODE_ENV=test"

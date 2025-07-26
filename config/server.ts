@@ -9,3 +9,6 @@ export default ({ env }) => ({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'https://tharara.com', 'https://test.tharara.com', 'https://api.tharara.com', 'https://test-api.tharara.com'],
   },
 });
+
+
+console.log(`PORT environment variable: ${process.env.PORT}`);
