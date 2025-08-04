@@ -58,7 +58,7 @@ jobs:
             --set-env-vars "NODE_ENV=production" \
             --set-env-vars "DATABASE_CLIENT=postgres" \
             --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
-            --set-env-vars "GCS_BUCKET=${{ secrets.TEST_GCS_BUCKET }}" \
+            --set-env-vars "GCS_BUCKET=${{ secrets.GCS_BUCKET }}" \
             --set-env-vars "APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}" \
             --set-env-vars "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" \
             --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
