@@ -29,8 +29,7 @@ RUN npm run build
 # Clean cache
 RUN npm cache clean --force
 
-# Set the port that Cloud Run expects
-ENV PORT=1337
+# Don't set PORT - Cloud Run provides it
 ENV HOST=0.0.0.0
 
 EXPOSE 1337

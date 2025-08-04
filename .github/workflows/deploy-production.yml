@@ -1,4 +1,4 @@
-name: Deploy to Production (Simple)
+name: Deploy to Production
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest
 
-      - name: Deploy to Cloud Run (Test)
+      - name: Deploy to Cloud Run (Initial)
         run: |
           gcloud run deploy ${{ env.SERVICE }} \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest \
@@ -49,9 +49,34 @@ jobs:
             --memory 1Gi \
             --cpu 2 \
             --timeout 300 \
-            --port 1337 \
-            --set-env-vars HOST=0.0.0.0,PORT=1337,NODE_ENV=production,DATABASE_CLIENT=sqlite,DATABASE_FILENAME=/tmp/data.db,APP_KEYS=testkey1,API_TOKEN_SALT=testsalt,ADMIN_JWT_SECRET=testadminsecret,JWT_SECRET=testjwtsecret
+            --port 1337
+
+      - name: Update Environment Variables
+        run: |
+          gcloud run services update ${{ env.SERVICE }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars HOST=0.0.0.0,NODE_ENV=production,DATABASE_CLIENT=sqlite,DATABASE_FILENAME=/tmp/data.db
+
+      - name: Update Strapi Secrets
+        run: |
+          # Update secrets one by one to avoid escaping issues
+          gcloud run services update ${{ env.SERVICE }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars APP_KEYS="${{ secrets.STRAPI_APP_KEYS }}"
+
+          gcloud run services update ${{ env.SERVICE }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars API_TOKEN_SALT="${{ secrets.STRAPI_API_TOKEN_SALT }}"
+
+          gcloud run services update ${{ env.SERVICE }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars ADMIN_JWT_SECRET="${{ secrets.STRAPI_ADMIN_JWT_SECRET }}"
+
+          gcloud run services update ${{ env.SERVICE }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars JWT_SECRET="${{ secrets.STRAPI_JWT_SECRET }}"
 
       - name: Show URL
         run: |
-          gcloud run services describe ${{ env.SERVICE }} --region ${{ env.REGION }} --format 'value(status.url)'
+          echo "Deployment complete!"
+          echo "URL: $(gcloud run services describe ${{ env.SERVICE }} --region ${{ env.REGION }} --format 'value(status.url)')"
