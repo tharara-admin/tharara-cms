@@ -2,13 +2,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm install
+COPY yarn.lock ./
 
+# Install dependencies
+RUN yarn install --frozen-lockfile
+
+# Copy source code
 COPY . .
-RUN npm run build
 
-# Cloud Run expects port 8080
-EXPOSE 8080
+# Build the application
+RUN yarn build
 
-CMD ["npm", "run", "start"]
+# Expose port
+EXPOSE 1337
+
+# Start the application
+CMD ["yarn", "start"]
