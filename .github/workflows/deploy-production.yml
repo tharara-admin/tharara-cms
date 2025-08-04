@@ -38,7 +38,7 @@ jobs:
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest
 
-      - name: Deploy to Cloud Run
+      - name: Deploy to Cloud Run (Test)
         run: |
           gcloud run deploy ${{ env.SERVICE }} \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest \
@@ -46,16 +46,11 @@ jobs:
             --allow-unauthenticated \
             --min-instances 0 \
             --max-instances 10 \
+            --memory 1Gi \
+            --cpu 2 \
+            --timeout 300 \
             --port 1337 \
-            --set-env-vars "HOST=0.0.0.0" \
-            --set-env-vars "PORT=1337" \
-            --set-env-vars "NODE_ENV=production" \
-            --set-env-vars "APP_KEYS=toBeModified1,toBeModified2" \
-            --set-env-vars "API_TOKEN_SALT=toBeModified" \
-            --set-env-vars "ADMIN_JWT_SECRET=toBeModified" \
-            --set-env-vars "JWT_SECRET=toBeModified" \
-            --set-env-vars "DATABASE_CLIENT=sqlite" \
-            --set-env-vars "DATABASE_FILENAME=.tmp/data.db"
+            --set-env-vars HOST=0.0.0.0,PORT=1337,NODE_ENV=production,DATABASE_CLIENT=sqlite,DATABASE_FILENAME=/tmp/data.db,APP_KEYS=testkey1,API_TOKEN_SALT=testsalt,ADMIN_JWT_SECRET=testadminsecret,JWT_SECRET=testjwtsecret
 
       - name: Show URL
         run: |
