@@ -1,29 +1,33 @@
 FROM node:18-alpine
 
 # Install build dependencies
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache build-base gcc autoconf automake libc6-compat zlib-dev libpng-dev vips-dev git python3 make g++
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies for build)
-RUN npm ci
+# Install dependencies
+RUN npm install
 
-# Copy all files
+# Copy application files
 COPY . .
 
-# Build Strapi
+# Build Strapi admin panel
 RUN npm run build
 
-# Remove development dependencies
+# Clean dev dependencies
 RUN npm prune --production
 
-# Cloud Run sets PORT to 8080
-ENV PORT=8080
+# Create uploads directory
+RUN mkdir -p public/uploads
+
+# Cloud Run uses PORT 8080
+ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
 EXPOSE 8080
 
-CMD ["npm", "run", "start"]
+# Start Strapi
+CMD ["npm", "start"]
