@@ -1,0 +1,88 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [production]
+  workflow_dispatch: # Allows manual trigger
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: ${{ secrets.GCP_REGION }}
+  SERVICE: tharara-cms
+  REPOSITORY: tharara-cms
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}" \
+            --tag "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest" \
+            --build-arg NODE_ENV=production \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker push "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
+          flags: |
+            --add-cloudsql-instances=${{ secrets.DATABASE_INSTANCE }}
+            --min-instances=1
+            --max-instances=10
+            --memory=1Gi
+            --cpu=2
+            --timeout=300
+            --allow-unauthenticated
+          env_vars: |
+            NODE_ENV=production
+            DATABASE_CLIENT=postgres
+            DATABASE_HOST=/cloudsql/${{ secrets.DATABASE_INSTANCE }}
+            DATABASE_PORT=5432
+            DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+            DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
+            DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+            DATABASE_SSL=false
+            APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}
+            API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}
+            ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}
+            JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}
+
+      - name: Show Cloud Run URL
+        run: echo "${{ steps.deploy.outputs.url }}"
+
+      - name: Tag successful deployment
+        if: success()
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -a "deploy-$(date +%Y%m%d-%H%M%S)" -m "Successful deployment to production"
+          git push origin --tags
