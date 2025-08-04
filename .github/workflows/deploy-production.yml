@@ -46,7 +46,16 @@ jobs:
             --allow-unauthenticated \
             --min-instances 0 \
             --max-instances 10 \
-            --port 1337
+            --port 1337 \
+            --set-env-vars "HOST=0.0.0.0" \
+            --set-env-vars "PORT=1337" \
+            --set-env-vars "NODE_ENV=production" \
+            --set-env-vars "APP_KEYS=toBeModified1,toBeModified2" \
+            --set-env-vars "API_TOKEN_SALT=toBeModified" \
+            --set-env-vars "ADMIN_JWT_SECRET=toBeModified" \
+            --set-env-vars "JWT_SECRET=toBeModified" \
+            --set-env-vars "DATABASE_CLIENT=sqlite" \
+            --set-env-vars "DATABASE_FILENAME=.tmp/data.db"
 
       - name: Show URL
         run: |
