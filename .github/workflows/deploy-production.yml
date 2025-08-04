@@ -55,7 +55,6 @@ jobs:
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
           flags: |
-            --add-cloudsql-instances=${{ secrets.DATABASE_INSTANCE }}
             --min-instances=1
             --max-instances=10
             --memory=1Gi
@@ -65,7 +64,7 @@ jobs:
           env_vars: |
             NODE_ENV=production
             DATABASE_CLIENT=postgres
-            DATABASE_HOST=/cloudsql/${{ secrets.DATABASE_INSTANCE }}
+            DATABASE_HOST=${{ secrets.DATABASE_HOST }}
             DATABASE_PORT=5432
             DATABASE_NAME=${{ secrets.DATABASE_NAME }}
             DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
