@@ -34,7 +34,7 @@ steps:
         "--image",
         "asia-south1-docker.pkg.dev/$PROJECT_ID/tharara-cms/cms:$COMMIT_SHA",
         "--region",
-        "asia-southeast1",
+        "asia-south1",
         "--platform",
         "managed",
         "--allow-unauthenticated",
@@ -57,4 +57,3 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
   machineType: "E2_HIGHCPU_8"
-  region: "asia-south1" # Build in asia-south1
