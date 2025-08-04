@@ -34,7 +34,7 @@ steps:
         "--image",
         "asia-south1-docker.pkg.dev/$PROJECT_ID/tharara-cms/cms:$COMMIT_SHA",
         "--region",
-        "asia-south1",
+        "asia-southeast1",
         "--platform",
         "managed",
         "--allow-unauthenticated",
