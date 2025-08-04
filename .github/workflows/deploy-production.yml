@@ -1,82 +1,56 @@
-name: Deploy to Production
-
+name: Deploy Tharara CMS
 on:
   push:
-    branches: [production]
-  workflow_dispatch:
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: ${{ secrets.GCP_REGION }}
-  SERVICE: tharara-cms
-  REPOSITORY: tharara-cms
-
+    branches:
+      - production
 jobs:
   deploy:
-    name: Deploy to Cloud Run
-    runs-on: ubuntu-latest
     environment: production
-
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    #   secrets: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Google Auth
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Cloud SDK
+      - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker
+      - name: Build and Push Docker Image
         run: |
-          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
-      - name: Build and Push Docker image
+          echo "Project ID: ${{ secrets.GCP_PROJECT_ID }}"
+          gcloud auth configure-docker asia-south1-docker.pkg.dev
+          echo "Authentication configured for asia-south1"
+          docker build -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest .
+          echo "Image built, pushing to registry..."
+          docker push asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest
+          echo "Push completed"
+      - name: Deploy to Cloud Run
         run: |
-          docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest .
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest
-
-      - name: Deploy to Cloud Run (Initial)
-        run: |
-          gcloud run deploy ${{ env.SERVICE }} \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest \
-            --region ${{ env.REGION }} \
+          gcloud run deploy tharara-cms \
+            --image asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tharara-cms/tharara-cms:latest \
+            --region asia-south1 \
+            --platform managed \
             --allow-unauthenticated \
-            --min-instances 0 \
-            --max-instances 10 \
+            --timeout 900 \
             --memory 1Gi \
-            --cpu 2 \
-            --timeout 300 \
-            --port 1337
-
-      - name: Update Environment Variables
-        run: |
-          gcloud run services update ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars HOST=0.0.0.0,NODE_ENV=production,DATABASE_CLIENT=sqlite,DATABASE_FILENAME=/tmp/data.db
-
-      - name: Update Strapi Secrets
-        run: |
-          # Update secrets one by one to avoid escaping issues
-          gcloud run services update ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars APP_KEYS="${{ secrets.STRAPI_APP_KEYS }}"
-
-          gcloud run services update ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars API_TOKEN_SALT="${{ secrets.STRAPI_API_TOKEN_SALT }}"
-
-          gcloud run services update ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars ADMIN_JWT_SECRET="${{ secrets.STRAPI_ADMIN_JWT_SECRET }}"
-
-          gcloud run services update ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars JWT_SECRET="${{ secrets.STRAPI_JWT_SECRET }}"
-
-      - name: Show URL
-        run: |
-          echo "Deployment complete!"
-          echo "URL: $(gcloud run services describe ${{ env.SERVICE }} --region ${{ env.REGION }} --format 'value(status.url)')"
+            --cpu 1 \
+            --add-cloudsql-instances=tharara-project:asia-south1:tharara-cms-db \
+            --set-env-vars "DATABASE_CLIENT=postgres" \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_HOST }}" \
+            --set-env-vars "GCS_BUCKET=${{ secrets.TEST_GCS_BUCKET }}" \
+            --set-env-vars "APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}" \
+            --set-env-vars "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" \
+            --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
+            --set-env-vars "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" \
+            --set-env-vars "NODE_ENV=producion"
