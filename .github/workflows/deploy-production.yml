@@ -87,8 +87,8 @@ jobs:
           fi
 
       # Optional: Add PostgreSQL after SQLite works
-      - name: Upgrade to PostgreSQL (Optional)
-        if: false # Change to true when ready to use PostgreSQL
+      - name: Upgrade to PostgreSQL
+        if: true
         run: |
           echo "Upgrading to PostgreSQL..."
           gcloud run services update ${{ env.SERVICE_NAME }} \
