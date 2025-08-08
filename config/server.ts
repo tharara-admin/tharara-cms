@@ -37,6 +37,7 @@
 module.exports = ({ env }) => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1337),
+  url: env('PUBLIC_URL', 'https://cms.tharara.com'), // Add your custom domain
   app: {
     keys: env.array('APP_KEYS'),
   },
@@ -44,6 +45,10 @@ module.exports = ({ env }) => ({
     auth: {
       secret: env('ADMIN_JWT_SECRET'),
     },
+    // Change admin path for security
+    url: env('ADMIN_URL', '/dashboard'),
+    // Disable admin panel in production
+    // serveAdminPanel: env.bool('SERVE_ADMIN', env('NODE_ENV') !== 'production'),
   },
   webhooks: {
     populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),

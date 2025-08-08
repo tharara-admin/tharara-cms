@@ -42,7 +42,11 @@ jobs:
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
-      - name: Deploy to Cloud Run
+      - name:
+          Deploy to Cloud Run
+          # Uncomment and add the following lines in run if you want to disable the Strapi admin panel
+          # --set-env-vars "SERVE_ADMIN=false" \
+          # --set-env-vars "STRAPI_DISABLE_ADMIN=true" \
         run: |
           echo "Deploying to Cloud Run..."
           gcloud run deploy ${{ env.SERVICE_NAME }} \
@@ -60,6 +64,8 @@ jobs:
             --service-account github-deploy-tharara@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
             --set-env-vars "NODE_ENV=production" \
             --set-env-vars "HOST=0.0.0.0" \
+            --set-env-vars "PUBLIC_URL=https://cms.tharara.com" \
+            --set-env-vars "ADMIN_URL=/dashboard" \
             --set-env-vars "DATABASE_CLIENT=postgres" \
             --set-env-vars "DATABASE_HOST=/cloudsql/tharara-project:asia-south1:tharara-cms-db" \
             --set-env-vars "DATABASE_PORT=5432" \
