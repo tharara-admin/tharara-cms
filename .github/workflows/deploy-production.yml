@@ -65,7 +65,7 @@ jobs:
             --set-env-vars "NODE_ENV=production" \
             --set-env-vars "HOST=0.0.0.0" \
             --set-env-vars "PUBLIC_URL=https://cms.tharara.com" \
-            --set-env-vars "ADMIN_URL=/dashboard" \
+            --set-env-vars "ADMIN_URL=/admin" \
             --set-env-vars "DATABASE_CLIENT=postgres" \
             --set-env-vars "DATABASE_HOST=/cloudsql/tharara-project:asia-south1:tharara-cms-db" \
             --set-env-vars "DATABASE_PORT=5432" \
