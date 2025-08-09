@@ -45,8 +45,8 @@ jobs:
       - name:
           Deploy to Cloud Run
           # Uncomment and add the following lines in run if you want to disable the Strapi admin panel
-          # --set-env-vars "SERVE_ADMIN=false" \
-          # --set-env-vars "STRAPI_DISABLE_ADMIN=true" \
+          # --set-env-vars "SERVE_ADMIN=true" \
+          # --set-env-vars "STRAPI_DISABLE_ADMIN=false" \
         run: |
           echo "Deploying to Cloud Run..."
           gcloud run deploy ${{ env.SERVICE_NAME }} \
