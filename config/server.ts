@@ -47,7 +47,7 @@ module.exports = ({ env }) => ({
       secret: env('ADMIN_JWT_SECRET'),
     },
     // Change admin path for security
-    url: env('ADMIN_URL', '/dashboard'),
+    // url: env('ADMIN_URL', '/dashboard'),
     // Disable admin panel in production
     // serveAdminPanel: env.bool('SERVE_ADMIN', env('NODE_ENV') !== 'production'),
   },
