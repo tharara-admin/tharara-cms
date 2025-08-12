@@ -25,7 +25,7 @@ module.exports = [
         'https://tharara.com',         // Your frontend
         'https://www.tharara.com',     // WWW version
         'http://localhost:3000',       // Frontend local dev
-        'http://localhost:3001',       // Backend local dev
+        'http://localhost:8080',       // Backend local dev
         // 'http://localhost:8000',       // Backend local dev
       ],
     },

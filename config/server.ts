@@ -13,7 +13,7 @@
 //   cors: {
 //     origin: [
 //       'http://localhost:3000',
-//       'http://localhost:3001',
+//       'http://localhost:8080',
 //       'https://tharara.com',
 //       'https://test.tharara.com',
 //       'https://api.tharara.com',
