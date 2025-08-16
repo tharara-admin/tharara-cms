@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Product",
+    "description": "Jewelry products"
   },
   "options": {
     "draftAndPublish": true
@@ -13,35 +14,126 @@
   "attributes": {
     "name": {
       "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
       "required": true
     },
     "description": {
-      "type": "blocks"
+      "type": "richtext"
+    },
+    "short_description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "sku": {
+      "type": "string",
+      "unique": true,
+      "maxLength": 100
     },
     "price": {
       "type": "decimal",
       "required": true,
-      "default": 0,
       "min": 0
     },
-    "stock": {
+    "sale_price": {
+      "type": "decimal",
+      "min": 0
+    },
+    "metal_type": {
+      "type": "enumeration",
+      "enum": [
+        "Gold",
+        "Silver",
+        "Platinum",
+        "Rose_Gold",
+        "White_Gold"
+      ]
+    },
+    "purity": {
+      "type": "enumeration",
+      "enum": [
+        "Gold_14K",
+        "Gold_18K",
+        "Gold_22K",
+        "Gold_24K",
+        "Silver_925_Sterling",
+        "Silver_999_Fine"
+      ]
+    },
+    "weight": {
+      "type": "decimal",
+      "min": 0
+    },
+    "making_charges": {
+      "type": "decimal",
+      "min": 0
+    },
+    "stone_type": {
+      "type": "enumeration",
+      "enum": [
+        "Diamond",
+        "Ruby",
+        "Emerald",
+        "Sapphire",
+        "Pearl",
+        "Tanzanite",
+        "Amethyst",
+        "Topaz",
+        "Garnet",
+        "Other"
+      ]
+    },
+    "stone_weight": {
+      "type": "decimal",
+      "min": 0
+    },
+    "stock_quantity": {
       "type": "integer",
-      "required": true,
       "default": 0,
       "min": 0
     },
-    "category": {
-      "type": "string"
+    "manage_stock": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     },
     "images": {
       "type": "media",
       "multiple": true,
+      "required": false,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
       ]
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "products"
+    },
+    "variants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product-variant.product-variant",
+      "mappedBy": "product"
+    },
+    "meta_title": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "meta_description": {
+      "type": "text"
     }
   }
 }
