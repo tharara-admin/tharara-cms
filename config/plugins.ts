@@ -1,3 +1,24 @@
+const fs = require('fs');
+
+// Function to get service account credentials
+function getServiceAccountCredentials() {
+    // For local development, use JSON file
+    const keyFilePath = './config/gcs-service-account.json';
+
+    if (fs.existsSync(keyFilePath)) {
+        // Local development - use JSON file
+        console.log('Using local service account file');
+        return JSON.parse(fs.readFileSync(keyFilePath, 'utf8'));
+    } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+        // Production - use single JSON environment variable
+        console.log('Using JSON environment variable for service account');
+        return JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+    } else {
+        console.error('No service account credentials found');
+        return null;
+    }
+}
+
 module.exports = ({ env }) => ({
     upload: {
         config: {
@@ -8,6 +29,7 @@ module.exports = ({ env }) => ({
                 uniform: false,
                 baseUrl: `https://storage.googleapis.com/tharara-bucket`,
                 basePath: '',
+                keyFile: getServiceAccountCredentials(),
             },
         },
     },
