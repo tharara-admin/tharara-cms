@@ -4,10 +4,8 @@ module.exports = ({ env }) => ({
             provider: '@strapi-community/strapi-provider-upload-google-cloud-storage',
             providerOptions: {
                 bucketName: 'tharara-bucket', //env('GCS_BUCKET'),
-                publicFiles: true,
+                publicFiles: false,
                 uniform: false,
-                // serviceAccount: env.json('GCS_SERVICE_ACCOUNT', {}),
-                // baseUrl: `https://storage.googleapis.com/${env('GCS_BUCKET', 'tharara-bucket')}`,
                 baseUrl: `https://storage.googleapis.com/tharara-bucket`,
                 basePath: '',
             },
