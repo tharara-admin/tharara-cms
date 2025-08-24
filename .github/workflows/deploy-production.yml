@@ -77,7 +77,7 @@ jobs:
             --set-env-vars "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" \
             --set-env-vars "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" \
             --set-env-vars "GCS_BUCKET=${{ secrets.GCS_BUCKET }}" \
-            --set-env-vars "GOOGLE_APPLICATION_CREDENTIALS_JSON=${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}"
+            --set-env-vars "GCS_SERVICE_ACCOUNT_JSON_BASE64=${{ secrets.GCS_SERVICE_ACCOUNT_JSON_BASE64 }}"
 
       - name: Verify deployment
         run: |
