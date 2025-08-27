@@ -616,6 +616,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       ]
     >;
     sale_price: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
@@ -627,6 +628,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         maxLength: 500;
       }>;
     sku: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.Unique &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;

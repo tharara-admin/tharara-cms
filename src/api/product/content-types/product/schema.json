@@ -32,6 +32,7 @@
     "sku": {
       "type": "string",
       "unique": true,
+      "required": true,
       "maxLength": 100
     },
     "price": {
@@ -41,6 +42,7 @@
     },
     "sale_price": {
       "type": "decimal",
+      "required": true,
       "min": 0
     },
     "metal_type": {
