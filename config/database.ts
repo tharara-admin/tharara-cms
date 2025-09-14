@@ -1,6 +1,7 @@
 module.exports = ({ env }) => {
   const isProduction = env('NODE_ENV') === 'production';
-
+  const databaseSSL = env.bool('DATABASE_SSL', false);
+  
   return {
     connection: {
       client: 'postgres',
@@ -10,7 +11,8 @@ module.exports = ({ env }) => {
         database: env('DATABASE_NAME', 'strapi'),
         user: env('DATABASE_USERNAME', 'strapi'),
         password: env('DATABASE_PASSWORD', 'strapi'),
-        ssl: isProduction ? { rejectUnauthorized: false } : env.bool('DATABASE_SSL', false),
+        // Only use SSL if explicitly enabled and not in local development
+        ssl: isProduction && databaseSSL ? { rejectUnauthorized: false } : false,
         // For Cloud SQL connections
         ...(isProduction && {
           connectionTimeoutMillis: 10000,
