@@ -35,72 +35,24 @@
       "required": true,
       "maxLength": 100
     },
-    "price": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
-    "sale_price": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
-    "metal_type": {
+    "metal": {
       "type": "enumeration",
       "enum": [
-        "Gold",
         "Silver",
-        "Platinum",
-        "Rose_Gold",
-        "White_Gold"
-      ]
-    },
-    "purity": {
-      "type": "enumeration",
-      "enum": [
+        "Sterling_Silver_925",
+        "Fine_Silver_999",
         "Gold_14K",
         "Gold_18K",
         "Gold_22K",
         "Gold_24K",
-        "Silver_925_Sterling",
-        "Silver_999_Fine"
+        "White_Gold",
+        "Rose_Gold",
+        "Gold"
       ]
     },
     "weight": {
       "type": "decimal",
       "min": 0
-    },
-    "making_charges": {
-      "type": "decimal",
-      "min": 0
-    },
-    "stone_type": {
-      "type": "enumeration",
-      "enum": [
-        "Diamond",
-        "Ruby",
-        "Emerald",
-        "Sapphire",
-        "Pearl",
-        "Tanzanite",
-        "Amethyst",
-        "Topaz",
-        "Garnet",
-        "Other"
-      ]
-    },
-    "stone_weight": {
-      "type": "decimal",
-      "min": 0
-    },
-    "stock_quantity": {
-      "type": "integer",
-      "default": 0,
-      "min": 0
-    },
-    "manage_stock": {
-      "type": "boolean",
-      "default": true
     },
     "is_active": {
       "type": "boolean",
@@ -119,23 +71,14 @@
       ]
     },
     "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "products"
+      "type": "component",
+      "repeatable": true,
+      "component": "product.category-selector"
     },
     "variants": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::product-variant.product-variant",
-      "mappedBy": "product"
-    },
-    "meta_title": {
-      "type": "string",
-      "maxLength": 255
-    },
-    "meta_description": {
-      "type": "text"
+      "type": "component",
+      "repeatable": true,
+      "component": "product.variant-selector"
     }
   }
 }
