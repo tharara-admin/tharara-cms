@@ -132,4 +132,8 @@ build
 
 # Service account files
 config/gcs-service-account.json
-*.json
+
+# Ignore specific JSON files but allow component and schema files
+package-lock.json
+*.log.json
+*.error.json

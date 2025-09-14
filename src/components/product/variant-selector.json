@@ -1,0 +1,72 @@
+{
+    "collectionName": "components_product_variant_selectors",
+    "info": {
+        "displayName": "Variant Selector",
+        "description": "Product variant with stock and pricing information"
+    },
+    "options": {},
+    "attributes": {
+        "plating": {
+            "type": "enumeration",
+            "enum": [
+                "Gold_14K",
+                "Gold_18K",
+                "Gold_22K",
+                "Gold_24K",
+                "Silver",
+                "White_Gold",
+                "Rose_Gold",
+                "Gold"
+            ],
+            "required": true
+        },
+        "variantSku": {
+            "type": "string",
+            "unique": true,
+            "required": true,
+            "maxLength": 100
+        },
+        "stockQuantity": {
+            "type": "integer",
+            "default": 0,
+            "min": 0,
+            "required": true
+        },
+        "basePrice": {
+            "type": "decimal",
+            "min": 0,
+            "required": true
+        },
+        "salePrice": {
+            "type": "decimal",
+            "min": 0,
+            "required": false
+        },
+        "stockPrice": {
+            "type": "decimal",
+            "min": 0,
+            "required": false
+        },
+        "stoneType": {
+            "type": "string",
+            "maxLength": 255,
+            "required": false
+        },
+        "stoneWeight": {
+            "type": "decimal",
+            "min": 0,
+            "required": false
+        },
+        "stoneColor": {
+            "type": "string",
+            "maxLength": 100,
+            "required": false
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true,
+            "required": false
+        }
+    },
+    "kind": "component"
+}
