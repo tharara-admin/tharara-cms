@@ -39,20 +39,49 @@
       "type": "enumeration",
       "enum": [
         "Silver",
-        "Sterling_Silver_925",
-        "Fine_Silver_999",
-        "Gold_14K",
-        "Gold_18K",
-        "Gold_22K",
-        "Gold_24K",
-        "White_Gold",
-        "Rose_Gold",
+        "Sterling Silver 925",
+        "Fine Silver 999",
+        "Gold 14K",
+        "Gold 18K",
+        "Gold 22K",
+        "Gold 24K",
+        "White Gold",
+        "Rose Gold",
         "Gold"
       ]
+    },
+    "plating": {
+      "type": "enumeration",
+      "enum": [
+        "Gold 14K",
+        "Gold 18K",
+        "Gold 22K",
+        "Gold 24K",
+        "Silver",
+        "White Gold",
+        "Rose Gold",
+        "Gold"
+      ],
+      "required": false
     },
     "weight": {
       "type": "decimal",
       "min": 0
+    },
+    "stoneType": {
+      "type": "string",
+      "maxLength": 255,
+      "required": false
+    },
+    "stoneWeight": {
+      "type": "decimal",
+      "min": 0,
+      "required": false
+    },
+    "stoneColor": {
+      "type": "string",
+      "maxLength": 100,
+      "required": false
     },
     "is_active": {
       "type": "boolean",
