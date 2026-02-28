@@ -64,10 +64,6 @@
       ],
       "required": false
     },
-    "weight": {
-      "type": "decimal",
-      "min": 0
-    },
     "stoneType": {
       "type": "string",
       "maxLength": 255,
