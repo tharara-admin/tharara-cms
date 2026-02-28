@@ -17,6 +17,11 @@
       "required": true,
       "maxLength": 100
     },
+    "size": {
+      "type": "string",
+      "maxLength": 50,
+      "required": false
+    },
     "stockQuantity": {
       "type": "integer",
       "default": 0,
@@ -38,30 +43,15 @@
       "min": 0,
       "required": false
     },
-    "isActive": {
-      "type": "boolean",
-      "default": true,
-      "required": false
-    },
-    "plating": {
-      "type": "enumeration",
-      "enum": ["Gold 14K", "Gold 18K", "Gold 22K", "Gold 24K", "Silver", "White Gold", "Rose Gold", "Gold"],
-      "required": false
-    },
-    "stoneType": {
-      "type": "string",
-      "maxLength": 255,
-      "required": false
-    },
-    "stoneWeight": {
+    "weight": {
       "type": "decimal",
       "min": 0,
       "required": false
     },
-    "stoneColor": {
-      "type": "string",
-      "maxLength": 100,
-      "required": false
+    "isActive": {
+      "type": "boolean",
+      "default": true,
+      "required": true
     }
   },
   "kind": "component"
