@@ -1,0 +1,58 @@
+{
+  "collectionName": "components_product_variant_selectors",
+  "info": {
+    "displayName": "Variant Selector",
+    "description": "Size variant only (e.g. Size 6). Different metal/plating/stone = different product."
+  },
+  "options": {},
+  "attributes": {
+    "variantName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "variantSku": {
+      "type": "string",
+      "unique": true,
+      "required": true,
+      "maxLength": 100
+    },
+    "size": {
+      "type": "string",
+      "maxLength": 50,
+      "required": false
+    },
+    "stockQuantity": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "required": true
+    },
+    "basePrice": {
+      "type": "decimal",
+      "min": 0,
+      "required": true
+    },
+    "salePrice": {
+      "type": "decimal",
+      "min": 0,
+      "required": false
+    },
+    "stockPrice": {
+      "type": "decimal",
+      "min": 0,
+      "required": false
+    },
+    "weight": {
+      "type": "decimal",
+      "min": 0,
+      "required": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  },
+  "kind": "component"
+}

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Product",
+    "description": "Jewelry products"
   },
   "options": {
     "draftAndPublish": true
@@ -13,35 +14,96 @@
   "attributes": {
     "name": {
       "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
       "required": true
     },
     "description": {
-      "type": "blocks"
+      "type": "richtext"
     },
-    "price": {
+    "short_description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "sku": {
+      "type": "string",
+      "unique": true,
+      "required": true,
+      "maxLength": 100
+    },
+    "metal": {
+      "type": "enumeration",
+      "enum": [
+        "Silver",
+        "Sterling Silver 925",
+        "Fine Silver 999",
+        "Gold 14K",
+        "Gold 18K",
+        "Gold 22K",
+        "Gold 24K",
+        "White Gold",
+        "Rose Gold",
+        "Gold"
+      ]
+    },
+    "plating": {
+      "type": "enumeration",
+      "enum": [
+        "Gold 14K",
+        "Gold 18K",
+        "Gold 22K",
+        "Gold 24K",
+        "Silver",
+        "White Gold",
+        "Rose Gold",
+        "Gold"
+      ],
+      "required": false
+    },
+    "stoneType": {
+      "type": "string",
+      "maxLength": 255,
+      "required": false
+    },
+    "stoneWeight": {
       "type": "decimal",
-      "required": true,
-      "default": 0,
-      "min": 0
+      "min": 0,
+      "required": false
     },
-    "stock": {
-      "type": "integer",
-      "required": true,
-      "default": 0,
-      "min": 0
+    "stoneColor": {
+      "type": "string",
+      "maxLength": 100,
+      "required": false
     },
-    "category": {
-      "type": "string"
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     },
     "images": {
       "type": "media",
       "multiple": true,
+      "required": false,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
       ]
+    },
+    "category": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.category-selector"
+    },
+    "variants": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.variant-selector"
     }
   }
 }

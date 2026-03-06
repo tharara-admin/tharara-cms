@@ -129,3 +129,11 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+
+# Service account files
+config/gcs-service-account.json
+
+# Ignore specific JSON files but allow component and schema files
+package-lock.json
+*.log.json
+*.error.json
